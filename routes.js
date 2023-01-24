@@ -59,14 +59,15 @@ const postSignUp = (req, res) => {
 };
 
 const getInfo = (req, res) => {
-  res.send('hola mundo');
+  res.send(`
+  Argumentos de entrada: ${process.argv.slice(2)} <br>
+  Nombre de la plataforma: ${process.platform} <br>
+  Versión de node.js: ${process.version} <br>
+  Memoria total reservada: ${process.memoryUsage.rss()} <br>
+  Path de ejecución: ${process.cwd()} <br>
+  Process id: ${process.pid} <br>
+  Carpeta del proyecto: ${process.argv} <br>
+  `);
 };
 
-const getRandoms = (req, res) => {
-  // let cant = req.query.cant
-  // cant = parseInt(cant)
-  // console.log(cant)
-  res.send('hola mundo');
-};
-
-module.exports = { getRoute, getLogin, getInfo, getRandoms, getFailLogin, getSignUp, getFailSignUp, getLogout, failRoute, postLogin, postSignUp };
+module.exports = { getRoute, getLogin, getInfo, getFailLogin, getSignUp, getFailSignUp, getLogout, failRoute, postLogin, postSignUp };

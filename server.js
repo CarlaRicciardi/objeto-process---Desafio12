@@ -6,16 +6,13 @@ const generateFakeProducts = require('./utils/fakeProductGenerator');
 const MensajesDaoMongoDB = require('./daos/mensajesDaoMongoDB.js');
 const ProductosDaoMongoDB = require('./daos/productosDaoMongoDB.js');
 const mongoose = require('mongoose');
-const { normalize, schema, denormalize } = require('normalizr');
+// const { normalize, schema, denormalize } = require('normalizr');
 const config = require('./config.js');
 const path = require('path');
 
 //yargs
 const yargs = require('yargs/yargs')(process.argv.slice(2));
 const args = yargs.default({ PORT: 8080 }).alias({ p: 'PORT' }).argv;
-
-//fork
-const { fork } = require('child_process');
 
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
@@ -45,6 +42,9 @@ app.engine(
     partialsDir: __dirname + '/views/partials',
   })
 );
+
+//fork
+const { fork } = require('child_process');
 
 //MONGOOSE CONNECTION
 async function connectMG() {
@@ -169,14 +169,25 @@ app.post('/signup', passport.authenticate('signup', { failureRedirect: '/failSig
 //LOGOUT
 app.get('/logout', routes.getLogout);
 
-//FAILROUTE
-app.get('*', routes.failRoute);
-
 //GET INFO
 app.get('/info', routes.getInfo);
 
 //GET RANDOMS
-app.get('/api/randoms', routes.getRandoms);
+app.get('/api/randoms', (req, res) => {
+  let cantNum = req.query.cant;
+  cant = parseInt(cantNum);
+
+  let computo = fork('./childProcess.js');
+  computo.send({ start: 'start', cantNum });
+
+  computo.on('message', (msg) => {
+    const { data } = msg;
+    res.end(`la suma es ${data}`);
+  });
+});
+
+//FAILROUTE
+app.get('*', routes.failRoute);
 
 //BACK END
 //WEBSOCKET PARA TABLA DE PRODUCTOS
