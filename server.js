@@ -169,11 +169,11 @@ app.post('/signup', passport.authenticate('signup', { failureRedirect: '/failSig
 //LOGOUT
 app.get('/logout', routes.getLogout);
 
-//GET INFO
-app.get('/info', routes.getInfo);
-
 //FAILROUTE
 app.get('*', routes.failRoute);
+
+//GET INFO
+app.get('/info', routes.getInfo);
 
 //GET RANDOMS
 app.get('/api/randoms', routes.getRandoms);
